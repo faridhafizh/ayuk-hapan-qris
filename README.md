@@ -1,55 +1,94 @@
 # Ayuk Hapan QRIS (MVP)
 
-Aplikasi web full-stack untuk monitoring ekspansi QRIS pada program **PASTI SIP – Ayuk Hapan QRIS**.
+> A full-stack web application designed for monitoring QRIS expansion as part of the **PASTI SIP – Ayuk Hapan QRIS** program.
 
-## Fitur MVP
-- Registrasi/login dengan role `PJP` dan `BI`.
-- PJP input **Readiness Checklist** dengan SLA H+2 (`on_time` / `late`).
-- Dashboard BI real-time (polling 30 detik):
-  - Hero metrics.
-  - Tren onboarding mingguan.
-  - Tabel kepatuhan SLA per PJP.
-  - Daftar keterlambatan.
-- Audit trail saat checklist diedit/dihapus.
-- Export data checklist ke CSV.
-- Notifikasi keterlambatan (simulasi via `console.log`).
+---
 
-## Tech Stack
-- Node.js + Express + EJS
-- Prisma ORM + SQLite
-- Session-based auth + bcrypt hash
-- Chart.js untuk grafik
+## 📖 Overview
 
-## Menjalankan Lokal
-1. Install dependency:
+Ayuk Hapan QRIS is a comprehensive platform built to streamline the onboarding and readiness checklist process for QRIS expansion. It serves two main roles: Payment Service Providers (PJP) and Bank Indonesia (BI) administrators. The platform ensures timely monitoring with SLA tracking, provides real-time dashboard analytics, and logs every audit trail securely.
+
+## ✨ Key Features
+
+- **Role-Based Access Control (RBAC):** Secure registration and login for `PJP` and `BI` roles.
+- **Readiness Checklist Management:** PJP users can input readiness checklists with automated SLA H+2 tracking (categorized as `on_time` or `late`).
+- **Real-Time BI Dashboard:** Refreshes data dynamically (30-second polling) featuring:
+  - Hero metrics overview.
+  - Weekly onboarding trends.
+  - SLA compliance table per PJP.
+  - Detailed list of SLA delays.
+- **Audit Trail:** Comprehensive logging when checklists are edited or deleted.
+- **Data Export:** Easily export checklist data to CSV format.
+- **Delay Notifications:** Automated notification system for delays (currently simulated via `console.log`).
+
+## 🛠️ Tech Stack
+
+- **Backend:** Node.js, Express.js
+- **Frontend:** EJS Templating, Chart.js (for analytics)
+- **Database:** Prisma ORM, SQLite (via `@prisma/adapter-libsql`)
+- **Authentication:** Session-based Auth, `bcryptjs` for secure password hashing
+
+## 🚀 Getting Started
+
+Follow these steps to set up and run the application locally.
+
+### Prerequisites
+
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (v16.x or newer recommended)
+- npm (Node Package Manager)
+
+### Installation & Setup
+
+1. **Clone the repository and install dependencies:**
    ```bash
    npm install
    ```
-2. Siapkan database:
+
+2. **Prepare the database:**
+   Synchronize the database schema and seed the initial data:
    ```bash
    npm run db:push
    npm run db:seed
    ```
-3. Jalankan server:
+
+3. **Start the development server:**
    ```bash
    npm run dev
    ```
-4. Akses di `http://localhost:3000`.
+   *Alternatively, use `npm start` for production mode.*
 
-## Akun Default
-- BI:
-  - email: `bi.admin@bi.go.id`
-  - password: `password123`
-- PJP:
-  - email: `pjp.lapangan@bank.id`
-  - password: `password123`
+4. **Access the application:**
+   Open your browser and navigate to `http://localhost:3000`.
 
-## Catatan SLA
-SLA dihitung dari selisih tanggal kunjungan ke tanggal submit (`submitted_at`).
-- `<= 2 hari` → `on_time`
-- `> 2 hari` → `late`
+---
 
-## Struktur Inti
-- `src/server.js`: API + auth + render halaman.
-- `src/views/*`: UI halaman PJP/BI.
-- `prisma/schema.prisma`: model User, Checklist, AuditLog.
+## 🔐 Default Accounts
+
+Upon running the database seed (`npm run db:seed`), the following default accounts are created for testing purposes:
+
+| Role | Email | Password |
+|------|-------|----------|
+| **BI Admin** | `bi.admin@bi.go.id` | `password123` |
+| **PJP User** | `pjp.lapangan@bank.id` | `password123` |
+
+---
+
+## 📊 SLA Logic
+
+Service Level Agreement (SLA) compliance is calculated based on the difference between the visit date and the submission date (`submitted_at`):
+
+- **On Time (`on_time`):** Submission delay is `<= 2 days`.
+- **Late (`late`):** Submission delay is `> 2 days`.
+
+---
+
+## 📂 Core Architecture
+
+- `src/server.js`: The main entry point containing the API, authentication logic, and page rendering routes.
+- `src/views/*`: Contains all UI templates for both PJP and BI dashboards (EJS files).
+- `prisma/schema.prisma`: The database schema definition encompassing `User`, `Checklist`, and `AuditLog` models.
+
+---
+
+> Built with ❤️ for robust and scalable monitoring.
