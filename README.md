@@ -1,4 +1,4 @@
-# Ayuk Hapan QRIS (MVP)
+# QRIS Onboarding Management System (QOMS)
 
 > A full-stack web application designed for monitoring QRIS expansion as part of the **PASTI SIP – Ayuk Hapan QRIS** program.
 
