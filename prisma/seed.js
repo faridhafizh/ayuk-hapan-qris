@@ -1,8 +1,12 @@
 import 'dotenv/config';
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaLibSql({
+  url: process.env.DATABASE_URL || 'file:./dev.db',
+});
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const password = await bcrypt.hash('password123', 10);
