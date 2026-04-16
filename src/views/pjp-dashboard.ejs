@@ -1,0 +1,29 @@
+<%- include('partials/header', { title: 'Dashboard PJP', user }) %>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+  <h2>Dashboard PJP</h2>
+  <a class="btn" href="/pjp/checklist/new">Input Checklist Baru</a>
+</div>
+<div class="card">
+  <h3>Riwayat Checklist Saya</h3>
+  <table class="table">
+    <thead><tr><th>ID</th><th>Tanggal Kunjungan</th><th>Merchant</th><th>SLA</th><th>Submit</th><th>Aksi</th></tr></thead>
+    <tbody>
+      <% rows.forEach((r) => { %>
+        <tr>
+          <td><%= r.checklistCode %></td>
+          <td><%= new Date(r.tanggalKunjungan).toLocaleDateString('id-ID') %></td>
+          <td><%= r.namaMerchant %></td>
+          <td>
+            <span class="badge <%= r.statusSla === 'late' ? 'red' : 'green' %>">
+              <%= r.statusSla === 'late' ? 'TERLAMBAT' : 'ON TIME' %>
+            </span>
+          </td>
+          <td><%= new Date(r.submittedAt).toLocaleString('id-ID') %></td>
+          <td><a href="/pjp/checklist/<%= r.id %>/edit">Edit</a></td>
+        </tr>
+      <% }) %>
+      <% if (!rows.length) { %><tr><td colspan="6">Belum ada data checklist.</td></tr><% } %>
+    </tbody>
+  </table>
+</div>
+<%- include('partials/footer') %>

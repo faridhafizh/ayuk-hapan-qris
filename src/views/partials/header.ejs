@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+<div class="container">
+  <div class="nav">
+    <div>
+      <strong>Ayuk Hapan QRIS</strong>
+      <% if (typeof user !== 'undefined' && user) { %>
+        <div class="small"><%= user.namaLengkap %> (<%= user.role %>)</div>
+      <% } %>
+    </div>
+    <% if (typeof user !== 'undefined' && user) { %>
+      <form method="post" action="/logout"><button class="btn secondary" type="submit">Logout</button></form>
+    <% } %>
+  </div>
