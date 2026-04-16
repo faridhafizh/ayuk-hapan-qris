@@ -1,0 +1,45 @@
+<%- include('partials/header', { title: 'Form Checklist', user }) %>
+<div class="card">
+  <h2><%= checklist ? 'Edit Checklist' : 'Form Readiness Checklist' %></h2>
+  <% if (error) { %><p class="badge red"><%= error %></p><% } %>
+  <form method="post" enctype="multipart/form-data" class="grid" action="<%= checklist ? '/pjp/checklist/' + checklist.id + '/edit' : '/pjp/checklist' %>">
+    <div class="grid grid-2">
+      <div><label>Tanggal Kunjungan</label><input name="tanggal_kunjungan" type="date" value="<%= checklist ? new Date(checklist.tanggalKunjungan).toISOString().slice(0,10) : '' %>" required /></div>
+      <div>
+        <label>Segmen</label>
+        <select name="segmen" required>
+          <% ['BUMDes','Sekolah','Pasar_Desa','Komunitas','Lainnya'].forEach((s) => { %>
+            <option value="<%= s %>" <%= checklist?.segmen === s ? 'selected' : '' %>><%= s.replace('_',' ') %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div><label>Nama Merchant</label><input name="nama_merchant" value="<%= checklist?.namaMerchant || '' %>" required /></div>
+      <div>
+        <label>Sudah diedukasi?</label>
+        <select name="sudah_diedukasi" required>
+          <option value="Ya" <%= checklist?.sudahDiedukasi ? 'selected' : '' %>>Ya</option>
+          <option value="Tidak" <%= checklist && !checklist.sudahDiedukasi ? 'selected' : '' %>>Tidak</option>
+        </select>
+      </div>
+      <div>
+        <label>Bersedia onboarding?</label>
+        <select name="bersedia_onboarding" id="bersedia_onboarding" required>
+          <option value="Ya" <%= checklist?.bersediaOnboarding ? 'selected' : '' %>>Ya</option>
+          <option value="Tidak" <%= checklist && !checklist.bersediaOnboarding ? 'selected' : '' %>>Tidak</option>
+        </select>
+      </div>
+      <div>
+        <label>Alasan Penolakan (jika tidak)</label>
+        <input name="alasan_penolakan" value="<%= checklist?.alasanPenolakan || '' %>" />
+      </div>
+      <div><label>Provinsi</label><input name="provinsi" value="<%= checklist?.provinsi || '' %>" required /></div>
+      <div><label>Kabupaten</label><input name="kabupaten" value="<%= checklist?.kabupaten || '' %>" required /></div>
+      <div><label>Kecamatan</label><input name="kecamatan" value="<%= checklist?.kecamatan || '' %>" required /></div>
+      <div><label>Desa</label><input name="desa" value="<%= checklist?.desa || '' %>" required /></div>
+      <div><label>Bukti Dokumentasi</label><input name="foto" type="file" accept="image/*" /></div>
+      <div><label>Catatan</label><textarea name="catatan"><%= checklist?.catatan || '' %></textarea></div>
+    </div>
+    <button class="btn" type="submit">Simpan Checklist</button>
+  </form>
+</div>
+<%- include('partials/footer') %>

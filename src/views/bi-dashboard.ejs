@@ -1,0 +1,97 @@
+<%- include('partials/header', { title: 'Dashboard BI', user }) %>
+<h2>Dashboard Monitoring BI</h2>
+<div class="hero">
+  <div class="card"><div class="small">Onboarding 30 Hari</div><h3 id="m1"><%= metrics.totalOnboarding30 %></h3></div>
+  <div class="card"><div class="small">Rata-rata Kepatuhan SLA</div><h3 id="m2"><%= metrics.avgSla %>%</h3></div>
+  <div class="card"><div class="small">PJP Aktif</div><h3 id="m3"><%= metrics.aktifPjp %></h3></div>
+  <div class="card"><div class="small">Keterlambatan Hari Ini</div><h3 id="m4"><%= metrics.terlambatHariIni %></h3></div>
+</div>
+
+<div class="card" style="margin-bottom:1rem;">
+  <h3>Filter Data</h3>
+  <div class="grid grid-2">
+    <div><label>Start</label><input type="date" id="start" /></div>
+    <div><label>End</label><input type="date" id="end" /></div>
+    <div>
+      <label>Segmen</label>
+      <select id="segmen"><option value="">Semua</option><option>BUMDes</option><option>Sekolah</option><option>Pasar_Desa</option><option>Komunitas</option><option>Lainnya</option></select>
+    </div>
+    <div><label>Provinsi</label><input id="provinsi" placeholder="contoh: Jawa Barat" /></div>
+    <div>
+      <label>PJP</label>
+      <select id="pjpId"><option value="">Semua</option><% allPjp.forEach((u)=> { %><option value="<%= u.id %>"><%= u.namaLengkap %></option><% }) %></select>
+    </div>
+    <div style="display:flex;align-items:end;gap:.5rem;">
+      <button class="btn" onclick="loadData()">Terapkan</button>
+      <a class="btn secondary" href="/bi/export.csv">Export CSV</a>
+      <a class="btn secondary" href="/bi/audit">Audit Trail</a>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3>Tren Onboarding per Minggu</h3>
+    <canvas id="trend" height="180"></canvas>
+  </div>
+  <div class="card">
+    <h3>Peta Sebaran (ringkas)</h3>
+    <div id="mapList" class="small">Belum ada data.</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+  <h3>Tabel Kepatuhan PJP</h3>
+  <table class="table" id="pjpTable"><thead><tr><th>Nama PJP</th><th>Total</th><th>Terlambat</th><th>% Kepatuhan</th></tr></thead><tbody></tbody></table>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+  <h3>Daftar Keterlambatan</h3>
+  <table class="table" id="lateTable"><thead><tr><th>ID</th><th>PJP</th><th>Merchant</th><th>Lokasi</th><th>SLA</th><th>Aksi</th></tr></thead><tbody></tbody></table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let chart;
+async function loadData() {
+  const params = new URLSearchParams({
+    start: document.getElementById('start').value,
+    end: document.getElementById('end').value,
+    segmen: document.getElementById('segmen').value,
+    pjpId: document.getElementById('pjpId').value,
+    provinsi: document.getElementById('provinsi').value
+  });
+  const res = await fetch('/bi/dashboard/data?' + params.toString());
+  const data = await res.json();
+
+  const lateBody = document.querySelector('#lateTable tbody');
+  lateBody.innerHTML = '';
+  data.rows.filter(r => r.statusSla === 'late').forEach((r) => {
+    lateBody.innerHTML += `<tr><td>${r.checklistCode}</td><td>${r.pjp.namaLengkap}</td><td>${r.namaMerchant}</td><td>${r.desa}, ${r.kecamatan}</td><td><span class='badge red'>TERLAMBAT</span></td><td><form method='post' action='/bi/checklist/${r.id}/delete' onsubmit="return confirm('Hapus data?')"><button class='btn danger' type='submit'>Hapus</button></form></td></tr>`;
+  });
+
+  const pjpBody = document.querySelector('#pjpTable tbody');
+  pjpBody.innerHTML = '';
+  data.pjpTable.forEach((p) => {
+    pjpBody.innerHTML += `<tr><td>${p.nama}</td><td>${p.total}</td><td>${p.late}</td><td>${p.kepatuhan}%</td></tr>`;
+  });
+
+  const mapList = document.getElementById('mapList');
+  mapList.innerHTML = data.mapPoints.slice(0, 15).map((p) => `• ${p.namaMerchant} (${p.desa}, ${p.kabupaten})`).join('<br>') || 'Belum ada data.';
+
+  const labels = Object.keys(data.weeklyTrend).sort();
+  const values = labels.map((l) => data.weeklyTrend[l]);
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('trend'), {
+    type: 'line',
+    data: { labels, datasets: [{ label: 'Onboarding', data: values, borderColor: '#1d4ed8' }] },
+    options: { responsive: true }
+  });
+
+  alert('Dashboard BI diperbarui');
+}
+
+loadData();
+setInterval(loadData, 30000);
+</script>
+<%- include('partials/footer') %>
