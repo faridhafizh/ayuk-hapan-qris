@@ -5,3 +5,4 @@ prisma/dev.db-journal
 cookies.txt
 dev.db
 dev.db-journal
+app.log
