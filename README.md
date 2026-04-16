@@ -1,12 +1,12 @@
 # QRIS Onboarding Management System (QOMS)
 
-> A full-stack web application designed for monitoring QRIS expansion as part of the **PASTI SIP – Ayuk Hapan QRIS** program.
+> A full-stack web application designed for monitoring QRIS expansion.
 
 ---
 
 ## 📖 Overview
 
-Ayuk Hapan QRIS is a comprehensive platform built to streamline the onboarding and readiness checklist process for QRIS expansion. It serves two main roles: Payment Service Providers (PJP) and Bank Indonesia (BI) administrators. The platform ensures timely monitoring with SLA tracking, provides real-time dashboard analytics, and logs every audit trail securely.
+QRIS Onboarding Management System is a comprehensive platform built to streamline the onboarding and readiness checklist process for QRIS expansion. It serves two main roles: Payment Service Providers (PJP) and Bank administrators. The platform ensures timely monitoring with SLA tracking, provides real-time dashboard analytics, and logs every audit trail securely.
 
 ## ✨ Key Features
 
